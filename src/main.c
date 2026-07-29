@@ -18,7 +18,7 @@ int main() {
     const float timerToFallThreshold = 0.8;
 
     ActivePiece activePiece = {
-        .type = 0,
+        .type = 6,
         .rotation = 0,
         .x = 2-2,
         .y = 0
@@ -26,8 +26,8 @@ int main() {
 
     ActivePiece newPiece = {
         .type = 0,
-        .rotation = 1,
-        .x = 6-2,
+        .rotation = 0,
+        .x = 2-2,
         .y = 0
     };
     
@@ -42,6 +42,8 @@ int main() {
     
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_SPACE)) activePiece.rotation = (activePiece.rotation + 1) % 4;
+        if (IsKeyPressed(KEY_LEFT)) activePiece.x -= 1;
+        if (IsKeyPressed(KEY_RIGHT)) activePiece.x += 1;
 
         // printf("frame time: %f\n", GetFrameTime());
         // printf("timerToFall: %f\n", timerToFall);
@@ -49,6 +51,7 @@ int main() {
         if (timerToFall >= timerToFallThreshold) {
             activePiece.y += 1;
             if (PieceCollision(activePiece)) {
+                newPiece.type = GetRandomValue(0, 6);
                 activePiece = newPiece;
             }
             timerToFall -= timerToFallThreshold;

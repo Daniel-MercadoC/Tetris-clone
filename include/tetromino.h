@@ -24,11 +24,28 @@ typedef struct {
     uint16_t rotations[4];
     Color color;
 } PieceDef;
+
 // Definition on all rotations, to prevent the need to calculate logically every single rotation whenever it happens; which would also make it trickier to
 // implement functionality like t-spins
-static const PieceDef PIECE_DEFS[1] = {
+static const PieceDef PIECE_DEFS[PIECE_COUNT] = {
     [PIECE_I] = {
         .rotations = {
+            // Bit layout of a rotation value (row0 = ROW4 written LAST, row3 = ROW4 written FIRST):
+            //
+            //   col:  3 | 2 | 1 | 0
+            //        ---|---|---|---
+            //   row0: d | c | b | a   <- last ROW4(a,b,c,d) argument
+            //   row1: d | c | b | a
+            //   row2: d | c | b | a
+            //   row3: d | c | b | a   <- first ROW4(a,b,c,d) argument (bits 12-15)
+            //
+            // This follows raylib's convention of x=0 being the left and y=0 being the top, which makes an I piece like so:
+            //
+            //    0 0 0 0    0 1 0 0
+            //    0 0 0 0    0 1 0 0
+            //    1 1 1 1    0 1 0 0
+            //    0 0 0 0    0 1 0 0
+            //
             GRID(ROW4(0,0,0,0), ROW4(1,1,1,1), ROW4(0,0,0,0), ROW4(0,0,0,0)),
             GRID(ROW4(0,0,1,0), ROW4(0,0,1,0), ROW4(0,0,1,0), ROW4(0,0,1,0)),
             GRID(ROW4(0,0,0,0), ROW4(1,1,1,1), ROW4(0,0,0,0), ROW4(0,0,0,0)),
@@ -36,6 +53,102 @@ static const PieceDef PIECE_DEFS[1] = {
         },
         // Raylib SKYBLUE. The CLITERAL can't be used, since cl compilation detects it as non-constant
         .color = { 102, 191, 255, 255 }
+    },
+    [PIECE_J] = {
+        .rotations = {
+            //
+            //    0 0 0 0    0 0 0 0    0 0 0 0    0 0 0 0
+            //    0 0 0 0    0 1 0 0    1 0 0 0    0 1 1 0
+            //    1 1 1 0    0 1 0 0    1 1 1 0    0 1 0 0
+            //    0 0 1 0    1 1 0 0    0 0 0 0    0 1 0 0
+            //
+            GRID(ROW4(0,1,0,0), ROW4(0,1,1,1), ROW4(0,0,0,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,1,1), ROW4(0,0,1,0), ROW4(0,0,1,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,0,0), ROW4(0,1,1,1), ROW4(0,0,0,1), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,1,0), ROW4(0,0,1,0), ROW4(0,1,1,0), ROW4(0,0,0,0))
+        },
+        // Raylib BLUE
+        .color = { 0, 121, 241, 255 }
+    },
+    [PIECE_L] = {
+        .rotations = {
+            //
+            //    0 0 0 0    0 0 0 0    0 0 0 0    0 0 0 0
+            //    0 0 1 0    0 1 0 0    0 0 0 0    1 1 0 0
+            //    1 1 1 0    0 1 0 0    1 1 1 0    0 1 0 0
+            //    0 0 0 0    0 1 1 0    1 0 0 0    0 1 0 0
+            //
+            GRID(ROW4(0,0,0,0), ROW4(0,1,1,1), ROW4(0,1,0,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,1,1,0), ROW4(0,0,1,0), ROW4(0,0,1,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,0,1), ROW4(0,1,1,1), ROW4(0,0,0,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,1,0), ROW4(0,0,1,0), ROW4(0,0,1,1), ROW4(0,0,0,0))
+        },
+        // Raylib ORANGE
+        .color = { 255, 161, 0, 255 }
+    },
+    [PIECE_O] = {
+        .rotations = {
+            //
+            //    0 0 0 0    0 0 0 0    0 0 0 0    0 0 0 0
+            //    0 1 1 0    0 1 1 0    0 1 1 0    0 1 1 0
+            //    0 1 1 0    0 1 1 0    0 1 1 0    0 1 1 0
+            //    0 0 0 0    0 0 0 0    0 0 0 0    0 0 0 0
+            //
+            GRID(ROW4(0,0,0,0), ROW4(0,1,1,0), ROW4(0,1,1,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,0,0), ROW4(0,1,1,0), ROW4(0,1,1,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,0,0), ROW4(0,1,1,0), ROW4(0,1,1,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,0,0), ROW4(0,1,1,0), ROW4(0,1,1,0), ROW4(0,0,0,0))
+        },
+        // Raylib YELLOW
+        .color = { 253, 249, 0, 255 }
+    },
+    [PIECE_S] = {
+        .rotations = {
+            //
+            //    0 0 0 0    0 1 0 0    0 0 0 0    0 1 0 0
+            //    0 1 1 0    0 1 1 0    0 1 1 0    0 1 1 0
+            //    1 1 0 0    0 0 1 0    1 1 0 0    0 0 1 0
+            //    0 0 0 0    0 0 0 0    0 0 0 0    0 0 0 0
+            //
+            GRID(ROW4(0,0,0,0), ROW4(0,0,1,1), ROW4(0,1,1,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,0,0), ROW4(0,1,0,0), ROW4(0,1,1,0), ROW4(0,0,1,0)),
+            GRID(ROW4(0,0,0,0), ROW4(0,0,1,1), ROW4(0,1,1,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,0,0), ROW4(0,1,0,0), ROW4(0,1,1,0), ROW4(0,0,1,0))
+        },
+        // Raylib LIME
+        .color = { 0, 158, 47, 255 }
+    },
+    [PIECE_T] = {
+        .rotations = {
+            //
+            //    0 0 0 0    0 0 0 0    0 0 0 0    0 0 0 0
+            //    0 1 0 0    0 1 0 0    0 0 0 0    0 1 0 0
+            //    1 1 1 0    0 1 1 0    1 1 1 0    1 1 0 0
+            //    0 0 0 0    0 1 0 0    0 1 0 0    0 1 0 0
+            //
+            GRID(ROW4(0,0,0,0), ROW4(0,1,1,1), ROW4(0,0,1,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,1,0), ROW4(0,1,1,0), ROW4(0,0,1,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,1,0), ROW4(0,1,1,1), ROW4(0,0,0,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,1,0), ROW4(0,0,1,1), ROW4(0,0,1,0), ROW4(0,0,0,0))
+        },
+        // Raylib VIOLET
+        .color = { 135, 60, 190, 255 }
+    },
+    [PIECE_Z] = {
+        .rotations = {
+            //
+            //    0 0 1 0    0 0 0 0    0 0 1 0    0 0 0 0
+            //    0 1 1 0    0 1 1 0    0 1 1 0    0 1 1 0
+            //    0 1 0 0    0 0 1 1    0 1 0 0    0 0 1 1
+            //    0 0 0 0    0 0 0 0    0 0 0 0    0 0 0 0
+            //
+            GRID(ROW4(0,0,0,0), ROW4(0,0,1,0), ROW4(0,1,1,0), ROW4(0,1,0,0)),
+            GRID(ROW4(0,0,0,0), ROW4(1,1,0,0), ROW4(0,1,1,0), ROW4(0,0,0,0)),
+            GRID(ROW4(0,0,0,0), ROW4(0,0,1,0), ROW4(0,1,1,0), ROW4(0,1,0,0)),
+            GRID(ROW4(0,0,0,0), ROW4(1,1,0,0), ROW4(0,1,1,0), ROW4(0,0,0,0))
+        },
+        // Raylib RED
+        .color = { 230, 41, 55, 255 }
     }
 };
 
@@ -46,6 +159,8 @@ typedef struct {
     int x, y;
 } ActivePiece;
 
-void InitPieceDefs();
+static inline int GetPieceCell(uint16_t rotation, int row, int col) {
+    return (rotation >> ((row * 4) + col) & 1);
+}
 
 #endif
