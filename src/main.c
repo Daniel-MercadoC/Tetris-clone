@@ -15,7 +15,7 @@ int main() {
     const int boardOriginY = (screenHeight/2) - ((BOARD_H-BOARD_BUFFER_H)*cellSize/2);
 
     float timerToFall = 0.0;
-    const float timerToFallThreshold = 0.8;
+    const float timerToFallThreshold = 0.4;
 
     ActivePiece activePiece = {
         .type = 6,

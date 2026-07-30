@@ -22,10 +22,11 @@ void DrawPiece(int originX, int originY, ActivePiece activePiece, int cellSize) 
     for (int i=0; i<4; i++) {
         for (int j=0; j<4; j++) {
             // printf("pieceRotation<<%d: %d\n", (i*4)+j, pieceRotation>>((i*4)+j) & 1);
+            if ((activePiece.x+j) < 0) continue;
             if (activePiece.y+i < BOARD_BUFFER_H) continue;
             if (GetPieceCell(pieceRotation, i, j)) {
                 DrawRectangle(((activePiece.x+j)*cellSize)+originX, ((activePiece.y+i)*cellSize)+originY, cellSize, cellSize, PIECE_DEFS[activePiece.type].color);
-            } else if (!board[activePiece.x+j][activePiece.y+i+1]) {
+            } else if (board[activePiece.x+j][activePiece.y+i] < 1) {
                 DrawRectangle(((activePiece.x+j)*cellSize)+originX, ((activePiece.y+i)*cellSize)+originY, cellSize, cellSize, BLACK);
             }
         }
