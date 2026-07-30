@@ -1,4 +1,4 @@
-// #include <stdio.h>
+#include <stdio.h>
 
 #include "raylib.h"
 
@@ -24,12 +24,26 @@ void DrawPiece(int originX, int originY, ActivePiece activePiece, int cellSize) 
             // printf("pieceRotation<<%d: %d\n", (i*4)+j, pieceRotation>>((i*4)+j) & 1);
             if ((activePiece.x+j) < 0) continue;
             if (activePiece.y+i < BOARD_BUFFER_H) continue;
+            if (activePiece.y+i > BOARD_H-1) continue;
             if (GetPieceCell(pieceRotation, i, j)) {
                 DrawRectangle(((activePiece.x+j)*cellSize)+originX, ((activePiece.y+i)*cellSize)+originY, cellSize, cellSize, PIECE_DEFS[activePiece.type].color);
             } else if (board[activePiece.x+j][activePiece.y+i] < 1) {
+                // printf("----------------DELETED----------------\n");
+                // printf("Deleted block at: (%d,%d) from detected board: %d\n", activePiece.x+j, activePiece.y+i, board[activePiece.x+j][activePiece.y+i]);
+                // printf("---------------------------------------\n");
                 DrawRectangle(((activePiece.x+j)*cellSize)+originX, ((activePiece.y+i)*cellSize)+originY, cellSize, cellSize, BLACK);
             }
         }
+        if ((board[activePiece.x-1][activePiece.y+i] < 1)) {
+            DrawRectangle(((activePiece.x-1)*cellSize)+originX, ((activePiece.y+i)*cellSize)+originY, cellSize, cellSize, BLACK);
+        }
+        if (board[activePiece.x+4][activePiece.y+i] < 1) {
+            DrawRectangle(((activePiece.x+4)*cellSize)+originX, ((activePiece.y+i)*cellSize)+originY, cellSize, cellSize, BLACK);
+        }
     }
-    DrawRectangle(((activePiece.x)*cellSize)+originX, ((activePiece.y-1)*cellSize)+originY, 4*cellSize, cellSize, BLACK);
+    for (int j=0; j<4; j++) {
+        if (board[activePiece.x+j][activePiece.y-1] < 1) {
+            DrawRectangle(((activePiece.x+j)*cellSize)+originX, ((activePiece.y-1)*cellSize)+originY, cellSize, cellSize, BLACK);
+        }
+    }
 }

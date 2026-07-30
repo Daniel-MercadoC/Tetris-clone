@@ -13,10 +13,10 @@ typedef struct {
 void PrintBoard() {
     printf("--------BOARD--------\n");
     for (int i=0; i<BOARD_H; i++) {
-	for (int j=0; j<BOARD_W; j++) {
-	    printf("%d", board[j][i]);
-	}
-	printf("\n");
+        for (int j=0; j<BOARD_W; j++) {
+        printf("%d", board[j][i]);
+        }
+        printf("\n");
     }
     printf("---------------------\n");
 }
@@ -24,18 +24,18 @@ void PrintBoard() {
 void UpdateBoard(ActivePiece activePiece) {
     for (int i=0; i<4; i++) {
         for (int j=0; j<4; j++) {
-	    if ((activePiece.x+j) < 0) continue;
-	    if (!GetPieceCell(PIECE_DEFS[activePiece.type].rotations[activePiece.rotation], i, j)) continue;
-	    // printf("----------------\n");
-	    // printf("Active piece: \n");
-	    // printf("x: %d\n", activePiece.x+j);
-	    // printf("y: %d\n", activePiece.y+i);
-	    // printf("cell: %d\n", GetPieceCell(PIECE_DEFS[activePiece.type].rotations[activePiece.rotation], i, j));
-	    // printf("----------------\n");
+            if ((activePiece.x+j) < 0) continue;
+            if (!GetPieceCell(PIECE_DEFS[activePiece.type].rotations[activePiece.rotation], i, j)) continue;
+            // printf("----------------\n");
+            // printf("Active piece: \n");
+            // printf("x: %d\n", activePiece.x+j);
+            // printf("y: %d\n", activePiece.y+i);
+            // printf("cell: %d\n", GetPieceCell(PIECE_DEFS[activePiece.type].rotations[activePiece.rotation], i, j));
+            // printf("----------------\n");
             board[activePiece.x+j][activePiece.y+i-1] = activePiece.type+1;
         }
     }
-    // PrintBoard();
+    PrintBoard();
 }
 
 bool PieceCollision(ActivePiece activePiece) {
@@ -43,13 +43,13 @@ bool PieceCollision(ActivePiece activePiece) {
     int lowestY = 2;
     
     for (int i=3; i>=0; i--) {
-	for (int j=0; j<4; j++) {
-	    if (GetPieceCell(PIECE_DEFS[activePiece.type].rotations[activePiece.rotation], i, j) && (cells[j].x < 1)) {
-		cells[j].x = j+1;
-		cells[j].y = i;
-		if (i > lowestY) lowestY = i;
-	    }
-	}
+        for (int j=0; j<4; j++) {
+            if (GetPieceCell(PIECE_DEFS[activePiece.type].rotations[activePiece.rotation], i, j) && (cells[j].x < 1)) {
+            cells[j].x = j+1;
+            cells[j].y = i;
+            if (i > lowestY) lowestY = i;
+            }
+        }
     }
 
     for (int e=0; e<4; e++) {
@@ -66,4 +66,45 @@ bool PieceCollision(ActivePiece activePiece) {
     }
         
     return false;
+}
+
+bool CheckCollisionToSide(ActivePiece activePiece, bool isLeft) {
+    bool foundX = false;
+    int offsetX = 0;
+    if (isLeft) {
+        offsetX = activePiece.x - 1;
+    } else {
+        offsetX = activePiece.x + 3;
+    }
+
+    if (isLeft) {
+        for (int i=0; i<4; i++) {
+            if (foundX) break;
+            
+            for (int j=0; j<4; j++) {
+                if (GetPieceCell(PIECE_DEFS[activePiece.type].rotations[activePiece.rotation], j, i)) {
+                    if (offsetX+i<0) return true;
+                    if (board[offsetX+i][activePiece.y+j]) {
+                        return true;
+                    }
+                    // foundX = true;
+                }
+            }
+        }
+        return false;
+        
+    } else {
+        for (int i=3; i>=0; i--) {
+            if (foundX) break;
+            
+            for (int j=0; j<4; j++) {
+                if (GetPieceCell(PIECE_DEFS[activePiece.type].rotations[activePiece.rotation], j, i)) {
+                    if ((offsetX-(3-i))>=BOARD_W-1) return true;
+                    if (board[offsetX-(3-(i+1))][activePiece.y+j]) return true;
+                    // foundX = true;
+                }
+            }
+        }
+        return false;
+    }
 }

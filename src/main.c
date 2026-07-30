@@ -41,9 +41,19 @@ int main() {
     EndDrawing();
     
     while (!WindowShouldClose()) {
-        if (IsKeyPressed(KEY_SPACE)) activePiece.rotation = (activePiece.rotation + 1) % 4;
-        if (IsKeyPressed(KEY_LEFT)) activePiece.x -= 1;
-        if (IsKeyPressed(KEY_RIGHT)) activePiece.x += 1;
+        if (IsKeyPressed(KEY_SPACE)) {
+            int move = 0;
+            activePiece.rotation = (activePiece.rotation + 1) % 4;
+            if (activePiece.type == 0) { move = 2; } else { move = 1; }
+            if (CheckCollisionToSide(activePiece, true)) activePiece.x += move;
+            if (CheckCollisionToSide(activePiece, false)) activePiece.x -= move;
+        }
+        if (IsKeyPressed(KEY_LEFT)) {
+            if (!CheckCollisionToSide(activePiece, true)) activePiece.x -= 1;
+        }
+        if (IsKeyPressed(KEY_RIGHT)) {
+            if (!CheckCollisionToSide(activePiece, false)) activePiece.x += 1;
+        }
 
         // printf("frame time: %f\n", GetFrameTime());
         // printf("timerToFall: %f\n", timerToFall);
@@ -51,7 +61,8 @@ int main() {
         if (timerToFall >= timerToFallThreshold) {
             activePiece.y += 1;
             if (PieceCollision(activePiece)) {
-                newPiece.type = GetRandomValue(0, 6);
+                // newPiece.type = GetRandomValue(0, 6);
+                newPiece.type = 0;
                 activePiece = newPiece;
             }
             timerToFall -= timerToFallThreshold;

@@ -20,5 +20,6 @@ typedef enum {
 CellType board[BOARD_W][BOARD_H];
 
 bool PieceCollision(ActivePiece activePiece);
+bool CheckCollisionToSide(ActivePiece activePiece, bool isLeft);
 
 #endif
