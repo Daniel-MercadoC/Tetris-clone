@@ -99,21 +99,25 @@ void CopyRow(int read, int write) {
 }
 
 void ClearFullRows() {
-    int read = BOARD_H-1;
-    int write = read;
+    int write = BOARD_H-1;
 
     for (int rows=BOARD_H-1; rows>=BOARD_BUFFER_H; rows--) {
         for (int cols=0; cols<BOARD_W; cols++) {
             int value = board[cols][rows];
             
             if (value == 0) {
-                // if (read != write)
-                CopyRow(read, write);
+                // if (rows != write)
+                CopyRow(rows, write);
                 write -= 1;
                 break;
             }
         }
-        read -= 1;
+    }
+
+    for (int rows=BOARD_BUFFER_H; rows<=write; rows++) {
+        for (int cols=0; cols<BOARD_W; cols++) {
+            board[cols][rows] = 0;
+        }
     }
 }
 
