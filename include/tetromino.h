@@ -27,6 +27,16 @@ typedef struct {
 
 // Definition on all rotations, to prevent the need to calculate logically every single rotation whenever it happens; which would also make it trickier to
 // implement functionality like t-spins
+//
+// IMPORTANT: Never fill any rotation such that the first row has the only cell in that column. i.e.:
+//
+// 1 1 0 0 <- WRONG
+// 0 1 0 0
+// 0 1 0 0
+// 0 0 0 0
+//
+// This is because of the implementation of bottom collision checking, which assumes this won't ever happen, and allows initialization of all values to be 0.
+// If this ever changes, the table of bottomCells would need to be initialized to -1 or add a sentinel value.
 static const PieceDef PIECE_DEFS[PIECE_COUNT] = {
     [PIECE_I] = {
         .rotations = {
@@ -152,6 +162,23 @@ static const PieceDef PIECE_DEFS[PIECE_COUNT] = {
     }
 };
 
+typedef struct { int lowestRow[4][4]; } BottomCells;
+
+#define NUM_KICKS 9
+
+typedef struct { int dx, dy; } KickOffset;
+static const KickOffset KICK_OFFSETS[NUM_KICKS] = {
+    { 0, 0},
+    {-1, 0},
+    { 1, 0},
+    { 0,-1},
+    { 0, 1},
+    {-1,-1},
+    { 1,-1},
+    {-1, 1},
+    { 1, 1}
+};
+
 // Piece types are alphabetically sorted everywhere, so type0 = I piece and type1 = J piece.
 typedef struct {
     int type;
@@ -162,5 +189,7 @@ typedef struct {
 static inline int GetPieceCell(uint16_t rotation, int row, int col) {
     return (rotation >> ((row * 4) + col) & 1);
 }
+void TryRotateInDirection(ActivePiece *activePiece, bool isLeft);
+void GenerateBottomCollisionTable(BottomCells *bottomCells);
 
 #endif

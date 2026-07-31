@@ -19,7 +19,9 @@ typedef enum {
 } CellType;
 CellType board[BOARD_W][BOARD_H];
 
-bool PieceCollision(ActivePiece activePiece);
-bool CheckCollisionToSide(ActivePiece activePiece, bool isLeft);
+void UpdateBoard(ActivePiece activePiece);
+bool BottomCollision(ActivePiece activePiece, const BottomCells *bottomCells);
+bool CollisionToSide(ActivePiece activePiece, bool isLeft);
+void ClearFullRows();
 
 #endif

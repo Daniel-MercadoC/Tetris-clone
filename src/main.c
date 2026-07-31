@@ -15,61 +15,80 @@ int main() {
     const int boardOriginY = (screenHeight/2) - ((BOARD_H-BOARD_BUFFER_H)*cellSize/2);
 
     float timerToFall = 0.0;
-    const float timerToFallThreshold = 0.4;
+    const float timerToFallThreshold = 0.3;
+
+    bool atBottom = false;
+    float timerToFlip = 0.0;
+    const float timerToFlipThreshold = 1.0;
 
     ActivePiece activePiece = {
-        .type = 6,
+        .type = GetRandomValue(0, 6),
         .rotation = 0,
         .x = 2-2,
         .y = 0
     };
 
     ActivePiece newPiece = {
-        .type = 0,
+        .type = GetRandomValue(0, 6),
         .rotation = 0,
         .x = 2-2,
         .y = 0
     };
+
+    // There are 4 rotations per piece and 4 possible x coordinates per rotation.
+    BottomCells bottomCells[PIECE_COUNT] = {0};
+    GenerateBottomCollisionTable(bottomCells);
     
     InitWindow(screenWidth, screenHeight, "Tetris");
 
     SetTargetFPS(120);
 
-    BeginDrawing();
-    ClearBackground(BLACK);
-    DrawBoard(boardOriginX, boardOriginY, cellSize, GRAY);
-    EndDrawing();
     
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_SPACE)) {
-            int move = 0;
-            activePiece.rotation = (activePiece.rotation + 1) % 4;
-            if (activePiece.type == 0) { move = 2; } else { move = 1; }
-            if (CheckCollisionToSide(activePiece, true)) activePiece.x += move;
-            if (CheckCollisionToSide(activePiece, false)) activePiece.x -= move;
+            TryRotateInDirection(&activePiece, false);
+        }
+        if (IsKeyPressed(KEY_Z)) {
+            TryRotateInDirection(&activePiece, true);
         }
         if (IsKeyPressed(KEY_LEFT)) {
-            if (!CheckCollisionToSide(activePiece, true)) activePiece.x -= 1;
+            if (!CollisionToSide(activePiece, true)) activePiece.x -= 1;
         }
         if (IsKeyPressed(KEY_RIGHT)) {
-            if (!CheckCollisionToSide(activePiece, false)) activePiece.x += 1;
+            if (!CollisionToSide(activePiece, false)) activePiece.x += 1;
         }
 
         // printf("frame time: %f\n", GetFrameTime());
         // printf("timerToFall: %f\n", timerToFall);
-        timerToFall += GetFrameTime();
-        if (timerToFall >= timerToFallThreshold) {
-            activePiece.y += 1;
-            if (PieceCollision(activePiece)) {
-                // newPiece.type = GetRandomValue(0, 6);
-                newPiece.type = 0;
+        
+        if (BottomCollision(activePiece, bottomCells)) {
+            atBottom = true;
+        } else {
+            atBottom = false;
+        }
+
+        if (atBottom) {
+            timerToFlip += GetFrameTime();
+            if (timerToFlip >= timerToFlipThreshold) {   
+                UpdateBoard(activePiece);
+                ClearFullRows();
+                newPiece.type = GetRandomValue(0, 6);
+                // newPiece.type = 5;
                 activePiece = newPiece;
+                timerToFlip -= timerToFlipThreshold;
             }
-            timerToFall -= timerToFallThreshold;
+        } else {
+            timerToFlip = 0;
+            timerToFall += GetFrameTime();
+            if (timerToFall >= timerToFallThreshold) {
+                activePiece.y += 1;
+                timerToFall -= timerToFallThreshold;
+            }
         }
         
         BeginDrawing();
-        DrawPiece(boardOriginX, boardOriginY-(BOARD_BUFFER_H*cellSize), activePiece, cellSize);
+        ClearBackground(BLACK);
+        DrawPieces(boardOriginX, boardOriginY-(BOARD_BUFFER_H*cellSize), activePiece, cellSize);
         DrawBoard(boardOriginX, boardOriginY, cellSize, GRAY);
         EndDrawing();
     }

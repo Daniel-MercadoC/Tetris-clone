@@ -15,35 +15,29 @@ void DrawBoard(int x, int y, int cellSize, Color color) {
     }
 }
 
-void DrawPiece(int originX, int originY, ActivePiece activePiece, int cellSize) {
+void DrawPieces(int originX, int originY, ActivePiece activePiece, int cellSize) {
+    for (int y = BOARD_BUFFER_H; y < BOARD_H; y++) {
+        for (int x = 0; x < BOARD_W; x++) {
+            Color cell = board[x][y] ? PIECE_DEFS[board[x][y]-1].color : BLACK;
+            DrawRectangle((x*cellSize)+originX, (y*cellSize)+originY, cellSize, cellSize, cell);
+        }
+    }
+    
     // 4 is hard coded here because all pieces have 4 blocks, hence a tetromino
     uint16_t pieceRotation = PIECE_DEFS[activePiece.type].rotations[activePiece.rotation];
     // printf("pieceRotation: %d\n", pieceRotation);
     for (int i=0; i<4; i++) {
         for (int j=0; j<4; j++) {
             // printf("pieceRotation<<%d: %d\n", (i*4)+j, pieceRotation>>((i*4)+j) & 1);
-            if ((activePiece.x+j) < 0) continue;
             if (activePiece.y+i < BOARD_BUFFER_H) continue;
+            if ((activePiece.x+j) < 0) continue;
+            
             if (activePiece.y+i > BOARD_H-1) continue;
+            if (activePiece.x+j > BOARD_W-1) continue;
+
             if (GetPieceCell(pieceRotation, i, j)) {
                 DrawRectangle(((activePiece.x+j)*cellSize)+originX, ((activePiece.y+i)*cellSize)+originY, cellSize, cellSize, PIECE_DEFS[activePiece.type].color);
-            } else if (board[activePiece.x+j][activePiece.y+i] < 1) {
-                // printf("----------------DELETED----------------\n");
-                // printf("Deleted block at: (%d,%d) from detected board: %d\n", activePiece.x+j, activePiece.y+i, board[activePiece.x+j][activePiece.y+i]);
-                // printf("---------------------------------------\n");
-                DrawRectangle(((activePiece.x+j)*cellSize)+originX, ((activePiece.y+i)*cellSize)+originY, cellSize, cellSize, BLACK);
             }
-        }
-        if ((board[activePiece.x-1][activePiece.y+i] < 1)) {
-            DrawRectangle(((activePiece.x-1)*cellSize)+originX, ((activePiece.y+i)*cellSize)+originY, cellSize, cellSize, BLACK);
-        }
-        if (board[activePiece.x+4][activePiece.y+i] < 1) {
-            DrawRectangle(((activePiece.x+4)*cellSize)+originX, ((activePiece.y+i)*cellSize)+originY, cellSize, cellSize, BLACK);
-        }
-    }
-    for (int j=0; j<4; j++) {
-        if (board[activePiece.x+j][activePiece.y-1] < 1) {
-            DrawRectangle(((activePiece.x+j)*cellSize)+originX, ((activePiece.y-1)*cellSize)+originY, cellSize, cellSize, BLACK);
         }
     }
 }
