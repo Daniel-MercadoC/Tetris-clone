@@ -106,7 +106,7 @@ void ClearFullRows() {
             int value = board[cols][rows];
             
             if (value == 0) {
-                // if (rows != write)
+                // if (read != write)
                 CopyRow(rows, write);
                 write -= 1;
                 break;
