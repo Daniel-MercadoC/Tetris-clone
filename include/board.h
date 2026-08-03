@@ -4,7 +4,7 @@
 #include "tetromino.h"
 
 #define BOARD_W 10
-#define BOARD_H 20
+#define BOARD_H 24
 #define BOARD_BUFFER_H 4
 
 typedef enum {
@@ -19,9 +19,10 @@ typedef enum {
 } CellType;
 CellType board[BOARD_W][BOARD_H];
 
-void UpdateBoard(ActivePiece activePiece);
-bool BottomCollision(ActivePiece activePiece, const BottomCells *bottomCells);
-bool CollisionToSide(ActivePiece activePiece, bool isLeft);
-void ClearFullRows();
+void UpdateBoard(const ActivePiece activePiece);
+bool BottomCollision(const ActivePiece activePiece, const BottomCells *bottomCells);
+bool OverlappingPieces(const ActivePiece activePiece);
+bool CollisionToSide(const ActivePiece activePiece, bool isLeft);
+int ClearFullRows();
 
 #endif

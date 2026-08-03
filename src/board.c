@@ -3,7 +3,6 @@
 #include "raylib.h"
 
 #include "board.h"
-#include "tetromino.h"
 
 // typedef struct {
 //     int x, y;
@@ -21,7 +20,7 @@ void PrintBoard() {
     printf("---------------------\n");
 }
 
-void UpdateBoard(ActivePiece activePiece) {
+void UpdateBoard(const ActivePiece activePiece) {
     for (int i=0; i<4; i++) {
         for (int j=0; j<4; j++) {
             if ((activePiece.x+j) < 0) continue;
@@ -35,10 +34,10 @@ void UpdateBoard(ActivePiece activePiece) {
             board[activePiece.x+j][activePiece.y+i] = activePiece.type+1;
         }
     }
-    PrintBoard();
+    // PrintBoard();
 }
 
-bool BottomCollision(ActivePiece activePiece, const BottomCells *bottomCells) {
+bool BottomCollision(const ActivePiece activePiece, const BottomCells *bottomCells) {
         // printf("------------------------------\n");
         // printf("Cells for current rotation\n");
     for (int i=0; i<4; i++) {
@@ -57,21 +56,26 @@ bool BottomCollision(ActivePiece activePiece, const BottomCells *bottomCells) {
     return false;
 }
 
-bool CollisionToSide(ActivePiece activePiece, bool isLeft) {
+bool CollisionToSide(const ActivePiece activePiece, bool isLeft) {
+    // printf("Checking collision to side\n");
     int dir = isLeft ? -1 : 1;
     for (int i=0; i<4; i++) {
         for (int j=0; j<4; j++) {
+            // printf("Getting piece rotation cells\n");
             if (!GetPieceCell(PIECE_DEFS[activePiece.type].rotations[activePiece.rotation], i, j)) continue;
             
+            // printf("Getting x coord to check\n");
             int checkX = activePiece.x + j + dir;
             if ((checkX < 0) || (checkX > BOARD_W-1)) return true;
+            // printf("Piece is inside bounds\n");
             if (board[checkX][activePiece.y+i]) return true;
+            // printf("Piece won't collide in cell: %d\n", j);
         }
     }
     return false;
 }
 
-bool OverlappingPieces(ActivePiece activePiece) {
+bool OverlappingPieces(const ActivePiece activePiece) {
     for (int i=0; i<4; i++) {
         for (int j=0; j<4; j++) {
             if (GetPieceCell(PIECE_DEFS[activePiece.type].rotations[activePiece.rotation], i, j)) {
@@ -98,8 +102,9 @@ void CopyRow(int read, int write) {
     }
 }
 
-void ClearFullRows() {
+int ClearFullRows() {
     int write = BOARD_H-1;
+    int clearedRows = 0;
 
     for (int rows=BOARD_H-1; rows>=BOARD_BUFFER_H; rows--) {
         for (int cols=0; cols<BOARD_W; cols++) {
@@ -110,7 +115,7 @@ void ClearFullRows() {
                 CopyRow(rows, write);
                 write -= 1;
                 break;
-            }
+            } else if (cols == BOARD_W-1) clearedRows++;
         }
     }
 
@@ -119,5 +124,7 @@ void ClearFullRows() {
             board[cols][rows] = 0;
         }
     }
+
+    return clearedRows;
 }
 
