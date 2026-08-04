@@ -10,6 +10,9 @@
 #define TEXT_SIZE 20
 #define TEXT_PADDING 16
 
+#define TITLE_SIZE (TEXT_SIZE * 3)
+#define TITLE_PADDING 60
+
 #define CELL_SIZE 32
 
 #endif

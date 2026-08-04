@@ -61,8 +61,8 @@ static const PieceDef PIECE_DEFS[PIECE_COUNT] = {
             GRID(ROW4(0,0,0,0), ROW4(1,1,1,1), ROW4(0,0,0,0), ROW4(0,0,0,0)),
             GRID(ROW4(0,0,1,0), ROW4(0,0,1,0), ROW4(0,0,1,0), ROW4(0,0,1,0))
         },
-        // Raylib SKYBLUE. The CLITERAL can't be used, since cl compilation detects it as non-constant
-        .color = { 102, 191, 255, 255 }
+        // Raylib PURPLE. The CLITERAL can't be used, since cl compilation detects it as non-constant
+        .color = { 200, 122, 255, 255 }
     },
     [PIECE_J] = {
         .rotations = {
@@ -77,8 +77,8 @@ static const PieceDef PIECE_DEFS[PIECE_COUNT] = {
             GRID(ROW4(0,0,0,0), ROW4(0,1,1,1), ROW4(0,0,0,1), ROW4(0,0,0,0)),
             GRID(ROW4(0,0,1,0), ROW4(0,0,1,0), ROW4(0,1,1,0), ROW4(0,0,0,0))
         },
-        // Raylib BLUE
-        .color = { 0, 121, 241, 255 }
+        // Raylib GREEN
+        .color = { 0, 228, 48, 255 }
     },
     [PIECE_L] = {
         .rotations = {
@@ -93,8 +93,8 @@ static const PieceDef PIECE_DEFS[PIECE_COUNT] = {
             GRID(ROW4(0,0,0,1), ROW4(0,1,1,1), ROW4(0,0,0,0), ROW4(0,0,0,0)),
             GRID(ROW4(0,0,1,0), ROW4(0,0,1,0), ROW4(0,0,1,1), ROW4(0,0,0,0))
         },
-        // Raylib ORANGE
-        .color = { 255, 161, 0, 255 }
+        // Raylib GOLD
+        .color = { 255, 203, 0, 255 }
     },
     [PIECE_O] = {
         .rotations = {
@@ -109,8 +109,8 @@ static const PieceDef PIECE_DEFS[PIECE_COUNT] = {
             GRID(ROW4(0,0,0,0), ROW4(0,1,1,0), ROW4(0,1,1,0), ROW4(0,0,0,0)),
             GRID(ROW4(0,0,0,0), ROW4(0,1,1,0), ROW4(0,1,1,0), ROW4(0,0,0,0))
         },
-        // Raylib YELLOW
-        .color = { 253, 249, 0, 255 }
+        // Raylib RED
+        .color = { 230, 41, 55, 255 }
     },
     [PIECE_S] = {
         .rotations = {
@@ -141,8 +141,8 @@ static const PieceDef PIECE_DEFS[PIECE_COUNT] = {
             GRID(ROW4(0,0,1,0), ROW4(0,1,1,1), ROW4(0,0,0,0), ROW4(0,0,0,0)),
             GRID(ROW4(0,0,1,0), ROW4(0,0,1,1), ROW4(0,0,1,0), ROW4(0,0,0,0))
         },
-        // Raylib VIOLET
-        .color = { 135, 60, 190, 255 }
+        // Raylib BLUE
+        .color = { 0, 121, 241, 255 }
     },
     [PIECE_Z] = {
         .rotations = {
@@ -157,8 +157,8 @@ static const PieceDef PIECE_DEFS[PIECE_COUNT] = {
             GRID(ROW4(0,0,0,0), ROW4(1,1,0,0), ROW4(0,1,1,0), ROW4(0,0,0,0)),
             GRID(ROW4(0,0,0,0), ROW4(0,0,1,0), ROW4(0,1,1,0), ROW4(0,1,0,0))
         },
-        // Raylib RED
-        .color = { 230, 41, 55, 255 }
+        // Raylib YELLOW
+        .color = { 253, 249, 0, 255 }
     }
 };
 

@@ -1,12 +1,18 @@
+#include <stdio.h>
+
 #include "raylib.h"
 
 #include "board.h"
 #include "game.h"
 
 int DeterminePieceSpeed(const GameState gameState, bool softDrop) {
-    if (softDrop && gameState.level < 29) return PIECE_SPEEDS[28];
-    if (gameState.level < 29) return PIECE_SPEEDS[gameState.level];
-    else return PIECE_SPEEDS[29];
+    int speed = 0;
+    
+    if (softDrop) speed = (gameState.level < 29) ? PIECE_SPEEDS[28] : PIECE_SPEEDS[gameState.level];
+    else if (gameState.level < 29) speed = PIECE_SPEEDS[gameState.level];
+    else speed = PIECE_SPEEDS[29];
+
+    return speed;
 }
 
 void UpdateLevel(GameState *gameState) {
@@ -26,20 +32,6 @@ void ManageGameState(GameState *gameState, bool startGame, bool triggerGameOver,
     if (gameState->currentScreen == SCREEN_MENU && startGame) gameState->currentScreen = SCREEN_GAME;
     if (gameState->currentScreen == SCREEN_GAME && triggerGameOver) gameState->currentScreen = SCREEN_GAMEOVER;
     if (gameState->currentScreen == SCREEN_GAMEOVER && resetGame) gameState->currentScreen = SCREEN_GAME;
-
-    
-    switch (gameState->currentScreen) {
-    case SCREEN_MENU:
-	// DrawMenu();
-	break;
-    case SCREEN_GAME:
-        
-	break;
-    case SCREEN_GAMEOVER:
-	// DrawGameover();
-	break;
-    }
-    
 }
 
 int LockPieceWithDelay(GameState *gameState, const int frameFlipCounter, const int frameFlipThreshold, const int softDropStart) {
@@ -47,10 +39,11 @@ int LockPieceWithDelay(GameState *gameState, const int frameFlipCounter, const i
 	UpdateBoard(gameState->activePiece);
 	
 	int clearedRows = ClearFullRows();
+	
+	UpdateScore(gameState, clearedRows, (gameState->activePiece.y)-softDropStart);
 	if (clearedRows > 0) {
 	    gameState->totalRows += clearedRows;
-	    
-	    UpdateScore(gameState, clearedRows, (BOARD_H-1)-softDropStart);
+
 	    UpdateLevel(gameState);
 	}
 	gameState->activePiece = gameState->nextPiece;

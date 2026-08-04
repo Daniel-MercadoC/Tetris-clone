@@ -1,6 +1,7 @@
 #include "raylib.h"
 
 #include "input.h"
+#include "board.h"
 
 void CheckForPieceMovement(GameState *gameState, int *heldFrameCounter, const int dasThreshold, const int arrValue) {
     if (IsKeyPressed(KEY_LEFT) && !IsKeyDown(KEY_RIGHT)) {
@@ -25,13 +26,14 @@ void CheckForPieceMovement(GameState *gameState, int *heldFrameCounter, const in
 }
 
 void CheckForSoftDrop(GameState *gameState, int *softDropStart, int *pieceDropThreshold) {
-    if (IsKeyPressed(KEY_DOWN)) *softDropStart = gameState->activePiece.x;
-        if (IsKeyDown(KEY_DOWN)) {
-            *pieceDropThreshold = DeterminePieceSpeed(*gameState, true);
-        }
-        if (IsKeyUp(KEY_DOWN)) {
-	    *pieceDropThreshold = DeterminePieceSpeed(*gameState, false);
-	    *softDropStart = 19;
+    if (IsKeyPressed(KEY_DOWN)) *softDropStart = gameState->activePiece.y;
+
+    if (IsKeyDown(KEY_DOWN)) {
+        *pieceDropThreshold = DeterminePieceSpeed(*gameState, true);
+    }
+    if (IsKeyUp(KEY_DOWN)) {
+        *pieceDropThreshold = DeterminePieceSpeed(*gameState, false);
+        *softDropStart = BOARD_H-1;
 	}
 }
 

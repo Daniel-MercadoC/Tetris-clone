@@ -11,9 +11,9 @@
 
 void PrintBoard() {
     printf("--------BOARD--------\n");
-    for (int i=0; i<BOARD_H; i++) {
-        for (int j=0; j<BOARD_W; j++) {
-        printf("%d", board[j][i]);
+    for (int rows=0; rows<BOARD_H; rows++) {
+        for (int cols=0; cols<BOARD_W; cols++) {
+        printf("%d", board[cols][rows]);
         }
         printf("\n");
     }
@@ -96,6 +96,13 @@ bool OverlappingPieces(const ActivePiece activePiece) {
     return false;
 }
 
+bool HeightLimitReached() {
+    for (int cols=0; cols<BOARD_W; cols++) {
+	if (board[cols][BOARD_H-BOARD_H_LIMIT]) return true;
+    }
+    return false;
+}
+
 void CopyRow(int read, int write) {
     for (int cols=0; cols<BOARD_W; cols++) {
         board[cols][write] = board[cols][read];
@@ -128,3 +135,10 @@ int ClearFullRows() {
     return clearedRows;
 }
 
+void ResetBoard() {
+    for (int rows=0; rows<BOARD_H; rows++) {
+        for (int cols=0; cols<BOARD_W; cols++) {
+            board[cols][rows] = 0;
+        }
+    }
+}

@@ -16,6 +16,7 @@ typedef struct {
     int score;
     int totalRows;
     int level;
+    int selectedButton;
 } GameState;
 
 // This is a table based on the original games' speeds, multiplied by two since the framerate of this version is twice the original.
@@ -53,6 +54,7 @@ static const int PIECE_SPEEDS[30] = {
 };
 
 int DeterminePieceSpeed(const GameState gameState, bool softDrop);
+void ManageGameState(GameState *gameState, bool startGame, bool triggerGameOver, bool resetGame);
 void UpdateLevel(GameState *gameState);
 void UpdateScore(GameState *gameState, int clearedRows, int softDroppedCells);
 int LockPieceWithDelay(GameState *gameState, const int frameFlipCounter, const int frameFlipThreshold, const int softDropStart);
